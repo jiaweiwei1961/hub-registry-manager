@@ -1,0 +1,9 @@
+go 1.21
+
+use (
+    ./gateway
+    ./registry-core
+    ./web-api
+    ./replication-service
+    ./shared
+)
