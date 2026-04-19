@@ -1,0 +1,170 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: hub-registry-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-registry}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-registry}
+      POSTGRES_DB: ${DB_NAME:-registry}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - hub-registry-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-registry}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: hub-registry-redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - hub-registry-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO 对象存储
+  minio:
+    image: minio/minio:latest
+    container_name: hub-registry-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - hub-registry-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # API Gateway
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: hub-registry-gateway
+    environment:
+      GATEWAY_PORT: 8080
+      REGISTRY_CORE_URL: http://registry-core:5000
+      WEB_API_URL: http://web-api:8081
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+    ports:
+      - "8080:8080"
+    depends_on:
+      registry-core:
+        condition: service_started
+      web-api:
+        condition: service_started
+    networks:
+      - hub-registry-network
+    restart: unless-stopped
+
+  # Registry Core
+  registry-core:
+    build:
+      context: ./registry-core
+      dockerfile: Dockerfile
+    container_name: hub-registry-core
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-registry}
+      DB_PASSWORD: ${DB_PASSWORD:-registry}
+      DB_NAME: ${DB_NAME:-registry}
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: ${S3_BUCKET:-registry}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    networks:
+      - hub-registry-network
+    restart: unless-stopped
+
+  # Web API
+  web-api:
+    build:
+      context: ./web-api
+      dockerfile: Dockerfile
+    container_name: hub-registry-web-api
+    environment:
+      WEB_API_PORT: 8081
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-registry}
+      DB_PASSWORD: ${DB_PASSWORD:-registry}
+      DB_NAME: ${DB_NAME:-registry}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - hub-registry-network
+    restart: unless-stopped
+
+  # Replication Service
+  replication-service:
+    build:
+      context: ./replication-service
+      dockerfile: Dockerfile
+    container_name: hub-registry-replication
+    environment:
+      REPLICATION_PORT: 8082
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-registry}
+      DB_PASSWORD: ${DB_PASSWORD:-registry}
+      DB_NAME: ${DB_NAME:-registry}
+      REGISTRY_ENDPOINT: http://registry-core:5000
+      REGISTRY_TOKEN: ${REGISTRY_TOKEN:-}
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      registry-core:
+        condition: service_started
+    networks:
+      - hub-registry-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  hub-registry-network:
+    driver: bridge
