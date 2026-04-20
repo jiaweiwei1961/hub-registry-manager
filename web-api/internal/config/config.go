@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -28,6 +29,12 @@ type DatabaseConfig struct {
 	Password string
 	Database string
 	SSLMode  string
+}
+
+// ConnectionString 返回数据库连接字符串
+func (c DatabaseConfig) ConnectionString() string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		c.Host, c.Port, c.User, c.Password, c.Database, c.SSLMode)
 }
 
 // AuthConfig 认证配置
