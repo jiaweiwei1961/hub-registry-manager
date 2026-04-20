@@ -31,7 +31,7 @@ func (Repository) TableName() string {
 
 // FullName 返回完整仓库名（namespace/name）
 func (r *Repository) FullName() string {
-	if r.Namespace.Name == "" {
+	if r.NamespaceID == uuid.Nil || r.Namespace.Name == "" {
 		return r.Name
 	}
 	return r.Namespace.Name + "/" + r.Name

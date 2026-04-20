@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -254,8 +257,8 @@ func isDigest(ref string) bool {
 }
 
 func calculateDigest(data []byte) string {
-	// 简化版本，实际应该使用 crypto/sha256
-	return fmt.Sprintf("sha256:%x", len(data))
+	hash := sha256.Sum256(data)
+	return "sha256:" + hex.EncodeToString(hash[:])
 }
 
 func buildManifestResponse(m *models.Manifest) map[string]interface{} {

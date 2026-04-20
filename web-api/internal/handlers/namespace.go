@@ -271,5 +271,3 @@ func (h *NamespaceHandler) DeleteNamespace(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
-
-// Helper imports for this file - already included in imports above

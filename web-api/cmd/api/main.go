@@ -73,7 +73,7 @@ func main() {
 	}
 
 	log.Printf("Starting Web API on port %d...", port)
-	if err := r.Run(":" + string(rune(port))); err != nil {
+	if err := r.Run(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

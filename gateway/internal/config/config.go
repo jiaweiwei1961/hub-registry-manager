@@ -41,7 +41,7 @@ func Load() *Config {
 			WriteTimeout: getEnvInt("WRITE_TIMEOUT", 30),
 		},
 		Auth: AuthConfig{
-			JWTSecret:     getEnv("JWT_SECRET", "default-secret-key"),
+			JWTSecret:     getEnv("JWT_SECRET", ""),
 			TokenExpiry:   getEnvInt("TOKEN_EXPIRY_HOURS", 24),
 			RefreshExpiry: getEnvInt("REFRESH_EXPIRY_HOURS", 168),
 		},

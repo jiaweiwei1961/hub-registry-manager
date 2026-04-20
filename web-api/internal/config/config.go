@@ -70,7 +70,7 @@ func Load() *Config {
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
 		Auth: AuthConfig{
-			JWTSecret:     getEnv("JWT_SECRET", "your-secret-key-change-in-production"),
+			JWTSecret:     getEnv("JWT_SECRET", ""),
 			TokenExpiry:   getEnvInt("TOKEN_EXPIRY_HOURS", 24),
 			RefreshExpiry: getEnvInt("REFRESH_EXPIRY_HOURS", 168),
 			PasswordCost:  getEnvInt("BCRYPT_COST", 12),
