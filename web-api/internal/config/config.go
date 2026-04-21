@@ -2,8 +2,7 @@ package config
 
 import (
 	"fmt"
-	"os"
-	"strconv"
+	"hub-registry/shared/pkg/config"
 )
 
 // Config Web API 配置
@@ -40,9 +39,9 @@ func (c DatabaseConfig) ConnectionString() string {
 // AuthConfig 认证配置
 type AuthConfig struct {
 	JWTSecret     string
-	TokenExpiry   int // 小时
-	RefreshExpiry int // 小时
-	PasswordCost  int // bcrypt cost
+	TokenExpiry   int
+	RefreshExpiry int
+	PasswordCost  int
 }
 
 // RedisConfig Redis 配置
@@ -57,45 +56,29 @@ type RedisConfig struct {
 func Load() *Config {
 	return &Config{
 		Server: ServerConfig{
-			Port:         getEnvInt("WEB_API_PORT", 8081),
-			ReadTimeout:  getEnvInt("READ_TIMEOUT", 30),
-			WriteTimeout: getEnvInt("WRITE_TIMEOUT", 30),
+			Port:         config.GetEnvInt("WEB_API_PORT", 8081),
+			ReadTimeout:  config.GetEnvInt("READ_TIMEOUT", 30),
+			WriteTimeout: config.GetEnvInt("WRITE_TIMEOUT", 30),
 		},
 		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnvInt("DB_PORT", 5432),
-			User:     getEnv("DB_USER", "registry"),
-			Password: getEnv("DB_PASSWORD", "registry"),
-			Database: getEnv("DB_NAME", "registry"),
-			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+			Host:     config.GetEnv("DB_HOST", "localhost"),
+			Port:     config.GetEnvInt("DB_PORT", 5432),
+			User:     config.GetEnv("DB_USER", "registry"),
+			Password: config.GetEnv("DB_PASSWORD", "registry"),
+			Database: config.GetEnv("DB_NAME", "registry"),
+			SSLMode:  config.GetEnv("DB_SSLMODE", "disable"),
 		},
 		Auth: AuthConfig{
-			JWTSecret:     getEnv("JWT_SECRET", ""),
-			TokenExpiry:   getEnvInt("TOKEN_EXPIRY_HOURS", 24),
-			RefreshExpiry: getEnvInt("REFRESH_EXPIRY_HOURS", 168),
-			PasswordCost:  getEnvInt("BCRYPT_COST", 12),
+			JWTSecret:     config.GetEnv("JWT_SECRET", ""),
+			TokenExpiry:   config.GetEnvInt("TOKEN_EXPIRY_HOURS", 24),
+			RefreshExpiry: config.GetEnvInt("REFRESH_EXPIRY_HOURS", 168),
+			PasswordCost:  config.GetEnvInt("BCRYPT_COST", 12),
 		},
 		Redis: RedisConfig{
-			Host:     getEnv("REDIS_HOST", "localhost"),
-			Port:     getEnvInt("REDIS_PORT", 6379),
-			Password: getEnv("REDIS_PASSWORD", ""),
-			DB:       getEnvInt("REDIS_DB", 0),
+			Host:     config.GetEnv("REDIS_HOST", "localhost"),
+			Port:     config.GetEnvInt("REDIS_PORT", 6379),
+			Password: config.GetEnv("REDIS_PASSWORD", ""),
+			DB:       config.GetEnvInt("REDIS_DB", 0),
 		},
 	}
-}
-
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
-}
-
-func getEnvInt(key string, defaultValue int) int {
-	if value := os.Getenv(key); value != "" {
-		if intValue, err := strconv.Atoi(value); err == nil {
-			return intValue
-		}
-	}
-	return defaultValue
 }

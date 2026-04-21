@@ -115,15 +115,40 @@ func (h *ManifestHandler) PutManifest(c *gin.Context) {
 	digest := calculateDigest(data)
 
 	// 解析命名空间和仓库名
-	namespace, repoName := parseRepositoryName(name)
+	namespaceName, repoName := parseRepositoryName(name)
+
+	// 查找或创建命名空间（如果指定了）
+	var namespaceID uuid.UUID
+	if namespaceName != "" {
+		var ns models.Namespace
+		if err := h.DB.Where("name = ?", namespaceName).First(&ns).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// 创建默认命名空间
+				ns = models.Namespace{
+					Name:        namespaceName,
+					DisplayName: namespaceName,
+				}
+				if err := h.DB.Create(&ns).Error; err != nil {
+					RespondError(c, http.StatusInternalServerError, "DATABASE_ERROR", "failed to create namespace")
+					return
+				}
+				namespaceID = ns.ID
+			} else {
+				RespondError(c, http.StatusInternalServerError, "DATABASE_ERROR", "failed to query namespace")
+				return
+			}
+		} else {
+			namespaceID = ns.ID
+		}
+	}
 
 	// 查找或创建仓库
 	var repo models.Repository
-	if err := h.DB.Where("name = ?", repoName).First(&repo).Error; err != nil {
+	if err := h.DB.Where("name = ? AND namespace_id = ?", repoName, namespaceID).First(&repo).Error; err != nil {
 		// 创建新仓库
 		repo = models.Repository{
 			Name:        repoName,
-			NamespaceID: uuid.Nil, // TODO: 查找或创建命名空间
+			NamespaceID: namespaceID,
 		}
 		if err := h.DB.Create(&repo).Error; err != nil {
 			RespondError(c, http.StatusInternalServerError, "DATABASE_ERROR", "failed to create repository")

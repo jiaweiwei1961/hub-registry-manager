@@ -1,8 +1,7 @@
 package config
 
 import (
-	"os"
-	"strconv"
+	"hub-registry/shared/pkg/config"
 )
 
 // Config 复制服务配置
@@ -43,38 +42,22 @@ type WorkerConfig struct {
 func Load() *Config {
 	return &Config{
 		Server: ServerConfig{
-			Port: getEnvInt("REPLICATION_PORT", 8082),
+			Port: config.GetEnvInt("REPLICATION_PORT", 8082),
 		},
 		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnvInt("DB_PORT", 5432),
-			User:     getEnv("DB_USER", "registry"),
-			Password: getEnv("DB_PASSWORD", "registry"),
-			Database: getEnv("DB_NAME", "registry"),
-			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+			Host:     config.GetEnv("DB_HOST", "localhost"),
+			Port:     config.GetEnvInt("DB_PORT", 5432),
+			User:     config.GetEnv("DB_USER", "registry"),
+			Password: config.GetEnv("DB_PASSWORD", "registry"),
+			Database: config.GetEnv("DB_NAME", "registry"),
+			SSLMode:  config.GetEnv("DB_SSLMODE", "disable"),
 		},
 		Scheduler: SchedulerConfig{
-			CheckInterval: getEnvInt("SCHEDULER_INTERVAL", 60),
+			CheckInterval: config.GetEnvInt("SCHEDULER_INTERVAL", 60),
 		},
 		Worker: WorkerConfig{
-			MaxConcurrency:  getEnvInt("WORKER_CONCURRENCY", 5),
-			DefaultTimeout: getEnvInt("WORKER_TIMEOUT", 30),
+			MaxConcurrency:  config.GetEnvInt("WORKER_CONCURRENCY", 5),
+			DefaultTimeout: config.GetEnvInt("WORKER_TIMEOUT", 30),
 		},
 	}
-}
-
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
-}
-
-func getEnvInt(key string, defaultValue int) int {
-	if value := os.Getenv(key); value != "" {
-		if intValue, err := strconv.Atoi(value); err == nil {
-			return intValue
-		}
-	}
-	return defaultValue
 }

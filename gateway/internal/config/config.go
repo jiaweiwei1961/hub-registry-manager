@@ -1,8 +1,7 @@
 package config
 
 import (
-	"os"
-	"strconv"
+	"hub-registry/shared/pkg/config"
 )
 
 // Config 网关配置
@@ -23,7 +22,7 @@ type ServerConfig struct {
 type AuthConfig struct {
 	JWTSecret     string
 	TokenExpiry   int
-	RefreshExpiry int
+	RefreshExpiryInt int
 }
 
 // UpstreamConfig 上游服务配置
@@ -36,34 +35,18 @@ type UpstreamConfig struct {
 func Load() *Config {
 	return &Config{
 		Server: ServerConfig{
-			Port:         getEnvInt("GATEWAY_PORT", 8080),
-			ReadTimeout:  getEnvInt("READ_TIMEOUT", 30),
-			WriteTimeout: getEnvInt("WRITE_TIMEOUT", 30),
+			Port:         config.GetEnvInt("GATEWAY_PORT", 8080),
+			ReadTimeout:  config.GetEnvInt("READ_TIMEOUT", 30),
+			WriteTimeout: config.GetEnvInt("WRITE_TIMEOUT", 30),
 		},
 		Auth: AuthConfig{
-			JWTSecret:     getEnv("JWT_SECRET", ""),
-			TokenExpiry:   getEnvInt("TOKEN_EXPIRY_HOURS", 24),
-			RefreshExpiry: getEnvInt("REFRESH_EXPIRY_HOURS", 168),
+			JWTSecret:     config.GetEnv("JWT_SECRET", ""),
+			TokenExpiry:   config.GetEnvInt("TOKEN_EXPIRY_HOURS", 24),
+			RefreshExpiryInt: config.GetEnvInt("REFRESH_EXPIRY_HOURS", 168),
 		},
 		Upstream: UpstreamConfig{
-			RegistryCore: getEnv("REGISTRY_CORE_URL", "http://localhost:5000"),
-			WebAPI:       getEnv("WEB_API_URL", "http://localhost:8081"),
+			RegistryCore: config.GetEnv("REGISTRY_CORE_URL", "http://localhost:5000"),
+			WebAPI:       config.GetEnv("WEB_API_URL", "http://localhost:8081"),
 		},
 	}
-}
-
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
-}
-
-func getEnvInt(key string, defaultValue int) int {
-	if value := os.Getenv(key); value != "" {
-		if intValue, err := strconv.Atoi(value); err == nil {
-			return intValue
-		}
-	}
-	return defaultValue
 }
