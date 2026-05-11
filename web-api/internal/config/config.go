@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"hub-registry/shared/pkg/config"
+	envconfig "hub-registry/shared/pkg/config"
 )
 
 // Config Web API 配置
@@ -11,6 +11,7 @@ type Config struct {
 	Database DatabaseConfig
 	Auth     AuthConfig
 	Redis    RedisConfig
+	S3       S3Config
 }
 
 // ServerConfig 服务器配置
@@ -52,33 +53,49 @@ type RedisConfig struct {
 	DB       int
 }
 
+// S3Config S3/MinIO 配置
+type S3Config struct {
+	Endpoint  string
+	AccessKey string
+	SecretKey string
+	Bucket    string
+	UseSSL    bool
+}
+
 // Load 从环境变量加载配置
 func Load() *Config {
 	return &Config{
 		Server: ServerConfig{
-			Port:         config.GetEnvInt("WEB_API_PORT", 8081),
-			ReadTimeout:  config.GetEnvInt("READ_TIMEOUT", 30),
-			WriteTimeout: config.GetEnvInt("WRITE_TIMEOUT", 30),
+			Port:         envconfig.GetEnvInt("WEB_API_PORT", 8081),
+			ReadTimeout:  envconfig.GetEnvInt("READ_TIMEOUT", 30),
+			WriteTimeout: envconfig.GetEnvInt("WRITE_TIMEOUT", 30),
 		},
 		Database: DatabaseConfig{
-			Host:     config.GetEnv("DB_HOST", "localhost"),
-			Port:     config.GetEnvInt("DB_PORT", 5432),
-			User:     config.GetEnv("DB_USER", "registry"),
-			Password: config.GetEnv("DB_PASSWORD", "registry"),
-			Database: config.GetEnv("DB_NAME", "registry"),
-			SSLMode:  config.GetEnv("DB_SSLMODE", "disable"),
+			Host:     envconfig.GetEnv("DB_HOST", "localhost"),
+			Port:     envconfig.GetEnvInt("DB_PORT", 5432),
+			User:     envconfig.GetEnv("DB_USER", "registry"),
+			Password: envconfig.GetEnv("DB_PASSWORD", "registry"),
+			Database: envconfig.GetEnv("DB_NAME", "registry"),
+			SSLMode:  envconfig.GetEnv("DB_SSLMODE", "disable"),
 		},
 		Auth: AuthConfig{
-			JWTSecret:     config.GetEnv("JWT_SECRET", ""),
-			TokenExpiry:   config.GetEnvInt("TOKEN_EXPIRY_HOURS", 24),
-			RefreshExpiry: config.GetEnvInt("REFRESH_EXPIRY_HOURS", 168),
-			PasswordCost:  config.GetEnvInt("BCRYPT_COST", 12),
+			JWTSecret:     envconfig.GetEnv("JWT_SECRET", ""),
+			TokenExpiry:   envconfig.GetEnvInt("TOKEN_EXPIRY_HOURS", 24),
+			RefreshExpiry: envconfig.GetEnvInt("REFRESH_EXPIRY_HOURS", 168),
+			PasswordCost:  envconfig.GetEnvInt("BCRYPT_COST", 12),
 		},
 		Redis: RedisConfig{
-			Host:     config.GetEnv("REDIS_HOST", "localhost"),
-			Port:     config.GetEnvInt("REDIS_PORT", 6379),
-			Password: config.GetEnv("REDIS_PASSWORD", ""),
-			DB:       config.GetEnvInt("REDIS_DB", 0),
+			Host:     envconfig.GetEnv("REDIS_HOST", "localhost"),
+			Port:     envconfig.GetEnvInt("REDIS_PORT", 6379),
+			Password: envconfig.GetEnv("REDIS_PASSWORD", ""),
+			DB:       envconfig.GetEnvInt("REDIS_DB", 0),
+		},
+		S3: S3Config{
+			Endpoint:  envconfig.GetEnv("S3_ENDPOINT", ""),
+			AccessKey: envconfig.GetEnv("S3_ACCESS_KEY", "minioadmin"),
+			SecretKey: envconfig.GetEnv("S3_SECRET_KEY", "minioadmin"),
+			Bucket:    envconfig.GetEnv("S3_BUCKET", "registry"),
+			UseSSL:    envconfig.GetEnvBool("S3_USE_SSL", false),
 		},
 	}
 }

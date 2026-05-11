@@ -1,0 +1,201 @@
+.container {
+  padding: 0;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Card styles */
+.container :global(.ant-card) {
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+  transition: all 200ms ease;
+}
+
+.container :global(.ant-card:hover) {
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-md);
+}
+
+.container :global(.ant-card-head) {
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+/* Table styles */
+.container :global(.ant-table) {
+  background: var(--bg-surface);
+}
+
+.container :global(.ant-table-thead > tr > th) {
+  background: var(--bg-muted) !important;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-family: var(--font-heading);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.container :global(.ant-table-tbody > tr > td) {
+  border-bottom: 1px solid var(--border-default);
+}
+
+.container :global(.ant-table-tbody > tr:hover > td) {
+  background: var(--primary-lightest) !important;
+}
+
+/* Button styles */
+.container :global(.ant-btn-primary) {
+  background: var(--primary) !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+}
+
+.container :global(.ant-btn-primary:hover) {
+  background: var(--primary-hover) !important;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+.container :global(.ant-btn-link) {
+  color: var(--primary);
+}
+
+.container :global(.ant-btn-link:hover) {
+  color: var(--primary-hover);
+}
+
+/* Input styles */
+.container :global(.ant-input) {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.container :global(.ant-input:hover) {
+  border-color: var(--primary-lighter);
+}
+
+.container :global(.ant-input:focus) {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-lightest);
+}
+
+/* Select styles */
+.container :global(.ant-select-selector) {
+  border: 1px solid var(--border-default) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Tag styles */
+.container :global(.ant-tag) {
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+.container :global(.ant-tag-blue) {
+  background: var(--primary-lightest);
+  color: var(--primary);
+  border-color: var(--primary-lighter);
+}
+
+.container :global(.ant-tag-green) {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}
+
+.container :global(.ant-tag-orange) {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border: none;
+}
+
+.container :global(.ant-tag-cyan) {
+  background: #E0F7FA;
+  color: #006064;
+  border: 1px solid #80DEEA;
+}
+
+.container :global(.ant-tag-red) {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: none;
+}
+
+.container :global(.ant-tag-purple) {
+  background: #F3E5F5;
+  color: #6A1B9A;
+  border: 1px solid #CE93D8;
+}
+
+.container :global(.ant-tag-gold) {
+  background: #FFF8E1;
+  color: #F57F17;
+  border: 1px solid #FFE082;
+}
+
+.container :global(.ant-tag-lime) {
+  background: #F9FBE7;
+  color: #558B2F;
+  border: 1px solid #C5E1A5;
+}
+
+.container :global(.ant-tag-magenta) {
+  background: #FCE4EC;
+  color: #AD1457;
+  border: 1px solid #F48FB1;
+}
+
+.container :global(.ant-tag-volcano) {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: none;
+}
+
+.container :global(.ant-tag-geekblue) {
+  background: #E8EAF6;
+  color: #283593;
+  border: 1px solid #B39DDB;
+}
+
+.container :global(.ant-tag-processing) {
+  background: var(--primary-lightest);
+  color: var(--primary);
+  border-color: var(--primary-lighter);
+}
+
+/* Modal styles */
+.container :global(.ant-modal-content) {
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+}
+
+.container :global(.ant-modal-header) {
+  border-bottom: 1px solid var(--border-default);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+/* Descriptions styles */
+.container :global(.ant-descriptions-item-label) {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Pagination styles */
+.container :global(.ant-pagination-item-active) {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.container :global(.ant-pagination-item-active a) {
+  color: var(--text-on-primary) !important;
+}

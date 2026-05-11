@@ -1,0 +1,4 @@
+VERSION=1.0.0
+RELEASE_DATE=2026-05-08
+COMPONENTS=gateway,registry-core,web-api,web-ui,replication-service
+DESCRIPTION=Hub Registry Container Image Management System v1.0 Release

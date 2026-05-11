@@ -15,7 +15,7 @@ import (
 
 // BlobHandler 处理 blob 相关请求
 type BlobHandler struct {
-	BaseHandler
+	*BaseHandler
 	Storage Storage
 }
 

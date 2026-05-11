@@ -20,8 +20,8 @@ type Tag struct {
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
 
 	// 关联
-	Repository Repository `json:"repository,omitempty"`
-	Manifest   Manifest `json:"manifest,omitempty"`
+	Repository Repository `gorm:"foreignKey:RepositoryID" json:"repository,omitempty"`
+	Manifest   Manifest   `gorm:"foreignKey:ManifestID" json:"manifest,omitempty"`
 }
 
 // TableName 指定表名

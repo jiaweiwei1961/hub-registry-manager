@@ -1,7 +1,7 @@
 package config
 
 import (
-	"hub-registry/shared/pkg/config"
+	envconfig "hub-registry/shared/pkg/config"
 )
 
 // Config 复制服务配置
@@ -42,22 +42,22 @@ type WorkerConfig struct {
 func Load() *Config {
 	return &Config{
 		Server: ServerConfig{
-			Port: config.GetEnvInt("REPLICATION_PORT", 8082),
+			Port: envconfig.GetEnvInt("REPLICATION_PORT", 8082),
 		},
 		Database: DatabaseConfig{
-			Host:     config.GetEnv("DB_HOST", "localhost"),
-			Port:     config.GetEnvInt("DB_PORT", 5432),
-			User:     config.GetEnv("DB_USER", "registry"),
-			Password: config.GetEnv("DB_PASSWORD", "registry"),
-			Database: config.GetEnv("DB_NAME", "registry"),
-			SSLMode:  config.GetEnv("DB_SSLMODE", "disable"),
+			Host:     envconfig.GetEnv("DB_HOST", "localhost"),
+			Port:     envconfig.GetEnvInt("DB_PORT", 5432),
+			User:     envconfig.GetEnv("DB_USER", "registry"),
+			Password: envconfig.GetEnv("DB_PASSWORD", "registry"),
+			Database: envconfig.GetEnv("DB_NAME", "registry"),
+			SSLMode:  envconfig.GetEnv("DB_SSLMODE", "disable"),
 		},
 		Scheduler: SchedulerConfig{
-			CheckInterval: config.GetEnvInt("SCHEDULER_INTERVAL", 60),
+			CheckInterval: envconfig.GetEnvInt("SCHEDULER_INTERVAL", 60),
 		},
 		Worker: WorkerConfig{
-			MaxConcurrency:  config.GetEnvInt("WORKER_CONCURRENCY", 5),
-			DefaultTimeout: config.GetEnvInt("WORKER_TIMEOUT", 30),
+			MaxConcurrency:  envconfig.GetEnvInt("WORKER_CONCURRENCY", 5),
+			DefaultTimeout: envconfig.GetEnvInt("WORKER_TIMEOUT", 30),
 		},
 	}
 }

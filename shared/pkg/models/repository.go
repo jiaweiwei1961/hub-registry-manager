@@ -13,7 +13,8 @@ type Repository struct {
 	NamespaceID uuid.UUID      `gorm:"type:uuid;not null;index:idx_ns_repo,unique" json:"namespace_id"`
 	Name        string         `gorm:"size:255;not null;index:idx_ns_repo,unique" json:"name"`
 	Description string         `gorm:"type:text" json:"description"`
-	IsPublic    bool           `gorm:"default:false" json:"is_public"`
+	IsPublic    bool           `json:"is_public"`
+	OwnerID     *uuid.UUID     `gorm:"type:uuid;index" json:"owner_id"`
 	PullCount   int64          `gorm:"default:0" json:"pull_count"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
@@ -21,6 +22,7 @@ type Repository struct {
 
 	// 关联
 	Namespace Namespace `json:"namespace,omitempty"`
+	Owner     User      `json:"owner,omitempty"`
 	Tags      []Tag     `json:"tags,omitempty"`
 }
 

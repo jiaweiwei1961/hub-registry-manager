@@ -61,20 +61,23 @@ services:
   # API Gateway
   gateway:
     build:
-      context: ./gateway
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: gateway/Dockerfile
     container_name: hub-registry-gateway
     environment:
       GATEWAY_PORT: 8080
       REGISTRY_CORE_URL: http://registry-core:5000
       WEB_API_URL: http://web-api:8081
-      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+      MINIO_URL: http://minio:9000
+      JWT_SECRET: ${JWT_SECRET:-hub-registry-jwt-secret-2024}
     ports:
       - "8080:8080"
     depends_on:
       registry-core:
         condition: service_started
       web-api:
+        condition: service_started
+      minio:
         condition: service_started
     networks:
       - hub-registry-network
@@ -83,8 +86,8 @@ services:
   # Registry Core
   registry-core:
     build:
-      context: ./registry-core
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: registry-core/Dockerfile
     container_name: hub-registry-core
     environment:
       DB_HOST: postgres
@@ -96,6 +99,9 @@ services:
       S3_BUCKET: ${S3_BUCKET:-registry}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+      BLOB_STORAGE_PATH: /data/blobs
+    volumes:
+      - blob_data:/data/blobs
     ports:
       - "5000:5000"
     depends_on:
@@ -110,8 +116,8 @@ services:
   # Web API
   web-api:
     build:
-      context: ./web-api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: web-api/Dockerfile
     container_name: hub-registry-web-api
     environment:
       WEB_API_PORT: 8081
@@ -122,7 +128,18 @@ services:
       DB_NAME: ${DB_NAME:-registry}
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+      JWT_SECRET: ${JWT_SECRET:-hub-registry-jwt-secret-2024}
+      BLOB_STORAGE_PATH: /data/blobs
+      REGISTRY_HOST: ${REGISTRY_HOST:-localhost}
+      REGISTRY_PORT: ${REGISTRY_PORT:-5000}
+      EXTERNAL_HOST: ${EXTERNAL_HOST:-hub.auok.online}
+      EXTERNAL_PORT: ${EXTERNAL_PORT:-50000}
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: ${S3_BUCKET:-registry}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+    volumes:
+      - blob_data:/data/blobs
     ports:
       - "8081:8081"
     depends_on:
@@ -130,6 +147,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      minio:
+        condition: service_started
     networks:
       - hub-registry-network
     restart: unless-stopped
@@ -137,8 +156,8 @@ services:
   # Replication Service
   replication-service:
     build:
-      context: ./replication-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: replication-service/Dockerfile
     container_name: hub-registry-replication
     environment:
       REPLICATION_PORT: 8082
@@ -147,8 +166,7 @@ services:
       DB_USER: ${DB_USER:-registry}
       DB_PASSWORD: ${DB_PASSWORD:-registry}
       DB_NAME: ${DB_NAME:-registry}
-      REGISTRY_ENDPOINT: http://registry-core:5000
-      REGISTRY_TOKEN: ${REGISTRY_TOKEN:-}
+      REGISTRY_ENDPOINT: registry-core:5000
     ports:
       - "8082:8082"
     depends_on:
@@ -160,10 +178,26 @@ services:
       - hub-registry-network
     restart: unless-stopped
 
+  # Web UI 前端
+  web-ui:
+    build:
+      context: ./web-ui
+      dockerfile: Dockerfile
+    container_name: hub-registry-web-ui
+    ports:
+      - "3000:80"
+    depends_on:
+      gateway:
+        condition: service_started
+    networks:
+      - hub-registry-network
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   redis_data:
   minio_data:
+  blob_data:
 
 networks:
   hub-registry-network:

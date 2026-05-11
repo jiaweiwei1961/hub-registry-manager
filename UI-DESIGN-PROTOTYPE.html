@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub Registry - 科技感系统界面设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --tech-blue: #00D4FF;
+            --tech-blue-dark: #0066FF;
+            --neon-cyan: #00FFE0;
+            --bg-dark: #0A0E1A;
+            --bg-card: rgba(26, 31, 46, 0.8);
+            --success: #00E676;
+            --danger: #FF1744;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8B9DC3;
+            --border-glow: rgba(0, 212, 255, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景网格纹理 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* 顶部发光条 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--tech-blue), var(--neon-cyan), var(--tech-blue), transparent);
+            z-index: 1000;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            height: 64px;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--tech-blue);
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--tech-blue), var(--tech-blue-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-size: 20px;
+        }
+
+        .nav-icon:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--tech-blue);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tech-blue), var(--neon-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-glow);
+            position: fixed;
+            top: 64px;
+            left: 0;
+            bottom: 0;
+            padding: 20px 0;
+            z-index: 99;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            margin: 4px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--tech-blue);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 10px var(--tech-blue);
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--tech-blue);
+        }
+
+        .menu-item.active {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--tech-blue);
+        }
+
+        .menu-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            margin-left: 240px;
+            margin-top: 64px;
+            padding: 24px;
+            min-height: calc(100vh - 64px);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary), var(--tech-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 玻璃态卡片基础样式 */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(0, 212, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+
+        /* 系统健康状态区域 */
+        .health-section {
+            margin-bottom: 24px;
+        }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .health-card {
+            composes: glass-card;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+        }
+
+        .health-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 212, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--tech-blue);
+        }
+
+        .health-info {
+            flex: 1;
+        }
+
+        .health-name {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .health-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* 状态指示器脉冲动画 */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(0, 230, 118, 0);
+            }
+        }
+
+        .status-dot.error {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+            animation: pulse-error 2s infinite;
+        }
+
+        @keyframes pulse-error {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(255, 23, 68, 0);
+            }
+        }
+
+        /* 数据统计区域 */
+        .stats-section {
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            composes: glass-card;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--tech-blue), var(--neon-cyan));
+            box-shadow: 0 0 10px var(--tech-blue);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 102, 255, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: var(--tech-blue);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--tech-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 底部内容区 */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
+        /* 系统信息面板 */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 镜像操作指南 */
+        .guide-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .guide-card {
+            composes: glass-card;
+        }
+
+        .guide-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--tech-blue);
+        }
+
+        .step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid var(--tech-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--tech-blue);
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .copy-btn {
+            padding: 4px 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 4px;
+            color: var(--tech-blue);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .health-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .health-grid {
+                grid-template-columns: 1fr;
+            }
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+            .guide-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">◆</div>
+            <span>Hub Registry</span>
+        </div>
+        <div class="navbar-right">
+            <div class="nav-icon">🔔</div>
+            <div class="user-avatar">A</div>
+            <div class="nav-icon">⚙️</div>
+        </div>
+    </nav>
+
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="menu-item active">
+            <span class="menu-icon">▤</span>
+            <span>Dashboard</span>
+        </div>
+        <div class="menu-item">
+            <span class="menu-icon">📁</span>
+            <span>命名空间</span>
+        </div>
+        <div class="menu-item">
+            <span class="menu-icon">📦</span>
+            <span>仓库管理</span>
+        </div>
+        <div class="menu-item">
+            <span class="menu-icon">🔄</span>
+            <span>镜像复制</span>
+        </div>
+        <div class="menu-item">
+            <span class="menu-icon">⚙️</span>
+            <span>系统设置</span>
+        </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <h1 class="page-title">系统概览</h1>
+
+        <!-- 系统健康状态 -->
+        <section class="health-section">
+            <div class="glass-card" style="margin-bottom: 16px;">
+                <div class="card-title">
+                    <span>系统健康状态</span>
+                    <span class="card-badge">6/6 正常</span>
+                </div>
+                <div class="health-grid">
+                    <div class="health-card">
+                        <div class="health-icon">🌐</div>
+                        <div class="health-info">
+                            <div class="health-name">Gateway</div>
+                            <div class="health-status">
+                                <div class="status-dot"></div>
+                                <span style="color: var(--success);">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">🔌</div>
+                        <div class="health-info">
+                            <div class="health-name">Web API</div>
+                            <div class="health-status">
+                                <div class="status-dot"></div>
+                                <span style="color: var(--success);">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">📦</div>
+                        <div class="health-info">
+                            <div class="health-name">Registry Core</div>
+                            <div class="health-status">
+                                <div class="status-dot"></div>
+                                <span style="color: var(--success);">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">☁️</div>
+                        <div class="health-info">
+                            <div class="health-name">MinIO</div>
+                            <div class="health-status">
+                                <div class="status-dot"></div>
+                                <span style="color: var(--success);">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">🐘</div>
+                        <div class="health-info">
+                            <div class="health-name">PostgreSQL</div>
+                            <div class="health-status">
+                                <div class="status-dot"></div>
+                                <span style="color: var(--success);">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">⚡</div>
+                        <div class="health-info">
+                            <div class="health-name">Redis</div>
+                            <div class="health-status">
+                                <div class="status-dot"></div>
+                                <span style="color: var(--success);">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数据统计 -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">命名空间</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">仓库数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🖼️</div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">镜像数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⬇️</div>
+                    <div class="stat-value">2,847</div>
+                    <div class="stat-label">下载次数</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 底部区域 -->
+        <div class="bottom-section">
+            <!-- 系统信息 -->
+            <div class="glass-card">
+                <div class="card-title">系统信息</div>
+                <div class="info-row">
+                    <span class="info-label">版本</span>
+                    <span class="info-value">v1.0.0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">运行环境</span>
+                    <span class="info-value">Docker</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">API版本</span>
+                    <span class="info-value">V2</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">更新时间</span>
+                    <span class="info-value">2026-05-04</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Registry地址</span>
+                    <span class="info-value" style="color: var(--tech-blue);">hub.auok.online:50000</span>
+                </div>
+            </div>
+
+            <!-- 镜像操作指南 -->
+            <div class="glass-card">
+                <div class="card-title">镜像操作指南</div>
+                <div class="guide-section">
+                    <div class="guide-card" style="background: transparent; box-shadow: none; border: 1px solid rgba(0, 212, 255, 0.1);">
+                        <div class="guide-title">📤 上传镜像</div>
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">登录Registry</div>
+                                <div class="code-block">
+                                    <span>docker login hub.auok.online:50000</span>
+                                    <button class="copy-btn">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">标记镜像</div>
+                                <div class="code-block">
+                                    <span>docker tag nginx:latest ...</span>
+                                    <button class="copy-btn">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">推送镜像</div>
+                                <div class="code-block">
+                                    <span>docker push ...</span>
+                                    <button class="copy-btn">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="guide-card" style="background: transparent; box-shadow: none; border: 1px solid rgba(0, 212, 255, 0.1);">
+                        <div class="guide-title">📥 下载镜像</div>
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">拉取镜像</div>
+                                <div class="code-block">
+                                    <span>docker pull hub.auok.online/...</span>
+                                    <button class="copy-btn">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">查看镜像</div>
+                                <div class="code-block">
+                                    <span>docker images</span>
+                                    <button class="copy-btn">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">运行镜像</div>
+                                <div class="code-block">
+                                    <span>docker run -d hub.auok.online/...</span>
+                                    <button class="copy-btn">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

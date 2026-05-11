@@ -1,0 +1,72 @@
+.container {
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.infoCard {
+  margin-bottom: 16px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+}
+
+.infoCard:hover {
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ant Design overrides */
+.container :global(.ant-card) {
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+}
+
+.container :global(.ant-card:hover) {
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-md);
+}
+
+.container :global(.ant-table-thead > tr > th) {
+  background: var(--bg-muted) !important;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-family: var(--font-heading);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.container :global(.ant-table-tbody > tr:hover > td) {
+  background: var(--primary-lightest) !important;
+}
+
+.container :global(.ant-btn-primary) {
+  background: var(--primary) !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+}
+
+.container :global(.ant-tag) {
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+.container :global(.ant-tag-blue) {
+  background: var(--primary-lightest);
+  color: var(--primary);
+  border-color: var(--primary-lighter);
+}
+
+.container :global(.ant-tag-green) {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}

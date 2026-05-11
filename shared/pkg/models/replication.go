@@ -43,8 +43,9 @@ func (ReplicationPolicy) TableName() string {
 // ReplicationTask 表示一个复制任务
 type ReplicationTask struct {
 	ID               uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	PolicyID         uuid.UUID      `gorm:"type:uuid;not null;index" json:"policy_id"`
+	PolicyID         *uuid.UUID     `gorm:"type:uuid;index" json:"policy_id"`
 	Status           string         `gorm:"size:20;not null" json:"status"` // pending, running, success, failed, stopped
+	Progress         int            `gorm:"default:0" json:"progress"`     // 0-100 进度百分比
 	SourceRegistry   string         `gorm:"size:255" json:"source_registry"`
 	DestRegistry     string         `gorm:"size:255" json:"dest_registry"`
 	StartedAt        *time.Time     `json:"started_at,omitempty"`
@@ -59,8 +60,8 @@ type ReplicationTask struct {
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
 
 	// 关联
-	Policy  ReplicationPolicy   `json:"policy,omitempty"`
-	Details []ReplicationTaskDetail `json:"details,omitempty"`
+	Policy  ReplicationPolicy        `gorm:"foreignKey:PolicyID" json:"policy,omitempty"`
+	Details []ReplicationTaskDetail  `gorm:"foreignKey:TaskID" json:"details,omitempty"`
 }
 
 // TableName 指定表名
@@ -120,27 +121,6 @@ type RegistryEndpoint struct {
 // TableName 指定表名
 func (RegistryEndpoint) TableName() string {
 	return "registry_endpoints"
-}
-
-// AuditLog 表示审计日志
-type AuditLog struct {
-	ID           uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	Timestamp    time.Time      `gorm:"index" json:"timestamp"`
-	Action       string         `gorm:"size:50" json:"action"`
-	ResourceType string         `gorm:"size:50" json:"resource_type"`
-	ResourceID   string         `gorm:"size:255" json:"resource_id"`
-	UserName     string         `gorm:"size:255" json:"user_name"`
-	IPAddress    string         `gorm:"size:45" json:"ip_address"`
-	Status       string         `gorm:"size:20" json:"status"`
-	Details      string         `gorm:"type:text" json:"details,omitempty"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    time.Time      `json:"updated_at"`
-	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
-}
-
-// TableName 指定表名
-func (AuditLog) TableName() string {
-	return "audit_logs"
 }
 
 // ManifestBlob 表示 Manifest 和 Blob 的关联表

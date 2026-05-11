@@ -18,7 +18,7 @@ import (
 
 // ManifestHandler 处理 manifest 相关请求
 type ManifestHandler struct {
-	BaseHandler
+	*BaseHandler
 	DB *gorm.DB
 }
 
@@ -45,16 +45,34 @@ func (h *ManifestHandler) GetManifest(c *gin.Context) {
 	// 解析命名空间和仓库名
 	namespace, repoName := parseRepositoryName(name)
 
-	// 查找仓库
+	// 查找命名空间（如果有）
+	var ns models.Namespace
+	var namespaceID uuid.UUID
+	if namespace != "" {
+		if err := h.DB.Where("name = ?", namespace).First(&ns).Error; err != nil {
+			// 命名空间不存在，返回404
+			RespondError(c, http.StatusNotFound, "NAMESPACE_NOT_FOUND", "namespace not found")
+			return
+		}
+		namespaceID = ns.ID
+	}
+
+	// 查找仓库 - 需要同时匹配 namespace_id 和 name
 	var repo models.Repository
-	if err := h.DB.Where("name = ?", repoName).First(&repo).Error; err != nil {
+	var err error
+	if namespaceID != uuid.Nil {
+		err = h.DB.Where("namespace_id = ? AND name = ?", namespaceID, repoName).First(&repo).Error
+	} else {
+		// 如果没有命名空间，查找 name 匹配且 namespace_id 为空的仓库
+		err = h.DB.Where("name = ?", repoName).First(&repo).Error
+	}
+	if err != nil {
 		RespondError(c, http.StatusNotFound, "REPOSITORY_NOT_FOUND", "repository not found")
 		return
 	}
 
 	// 查找 manifest
 	var manifest models.Manifest
-	var err error
 
 	// 尝试通过 digest 查找
 	if isDigest(reference) {
@@ -232,16 +250,32 @@ func (h *ManifestHandler) DeleteManifest(c *gin.Context) {
 	// 解析命名空间和仓库名
 	namespace, repoName := parseRepositoryName(name)
 
-	// 查找仓库
+	// 查找命名空间（如果有）
+	var ns models.Namespace
+	var namespaceID uuid.UUID
+	if namespace != "" {
+		if err := h.DB.Where("name = ?", namespace).First(&ns).Error; err != nil {
+			RespondError(c, http.StatusNotFound, "NAMESPACE_NOT_FOUND", "namespace not found")
+			return
+		}
+		namespaceID = ns.ID
+	}
+
+	// 查找仓库 - 需要同时匹配 namespace_id 和 name
 	var repo models.Repository
-	if err := h.DB.Where("name = ?", repoName).First(&repo).Error; err != nil {
+	var err error
+	if namespaceID != uuid.Nil {
+		err = h.DB.Where("namespace_id = ? AND name = ?", namespaceID, repoName).First(&repo).Error
+	} else {
+		err = h.DB.Where("name = ?", repoName).First(&repo).Error
+	}
+	if err != nil {
 		RespondError(c, http.StatusNotFound, "REPOSITORY_NOT_FOUND", "repository not found")
 		return
 	}
 
 	// 查找 manifest
 	var manifest models.Manifest
-	var err error
 
 	if isDigest(reference) {
 		err = h.DB.Where("repository_id = ? AND digest = ?", repo.ID, reference).First(&manifest).Error

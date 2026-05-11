@@ -1,0 +1,180 @@
+.container {
+  padding: 0;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.code {
+  background: var(--bg-muted);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  color: var(--primary);
+  border: 1px solid var(--border-default);
+}
+
+/* Card styles */
+.container :global(.ant-card) {
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+  transition: all 200ms ease;
+}
+
+.container :global(.ant-card:hover) {
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-md);
+}
+
+/* Table styles */
+.container :global(.ant-table) {
+  background: var(--bg-surface);
+}
+
+.container :global(.ant-table-thead > tr > th) {
+  background: var(--bg-muted) !important;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-family: var(--font-heading);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.container :global(.ant-table-tbody > tr > td) {
+  border-bottom: 1px solid var(--border-default);
+}
+
+.container :global(.ant-table-tbody > tr:hover > td) {
+  background: var(--primary-lightest) !important;
+}
+
+/* Button styles */
+.container :global(.ant-btn-primary) {
+  background: var(--primary) !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+}
+
+.container :global(.ant-btn-primary:hover) {
+  background: var(--primary-hover) !important;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+/* Input styles */
+.container :global(.ant-input) {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.container :global(.ant-input:hover) {
+  border-color: var(--primary-lighter);
+}
+
+.container :global(.ant-input:focus) {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-lightest);
+}
+
+/* Select styles */
+.container :global(.ant-select-selector) {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.container :global(.ant-select-focused .ant-select-selector) {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-lightest) !important;
+}
+
+/* Tag styles */
+.container :global(.ant-tag) {
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+.container :global(.ant-tag-blue) {
+  background: var(--primary-lightest);
+  color: var(--primary);
+  border-color: var(--primary-lighter);
+}
+
+.container :global(.ant-tag-green) {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}
+
+/* Modal styles */
+.container :global(.ant-modal-content) {
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+}
+
+.container :global(.ant-modal-header) {
+  border-bottom: 1px solid var(--border-default);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+/* Form styles */
+.container :global(.ant-form-item-label > label) {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Alert styles */
+.container :global(.ant-alert-info) {
+  background: var(--primary-lightest);
+  border: 1px solid var(--primary-lighter);
+  border-radius: var(--radius-md);
+}
+
+.container :global(.ant-alert-message) {
+  color: var(--primary);
+}
+
+/* Tabs styles */
+.container :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  color: var(--primary) !important;
+  font-weight: 600;
+}
+
+.container :global(.ant-tabs-ink-bar) {
+  background: var(--primary);
+}
+
+/* Collapse styles */
+.container :global(.ant-collapse) {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.container :global(.ant-collapse-header) {
+  color: var(--primary) !important;
+  font-weight: 500;
+}
+
+/* Drawer styles */
+.container :global(.ant-drawer-content) {
+  background: var(--bg-surface);
+}
+
+.container :global(.ant-drawer-header) {
+  border-bottom: 1px solid var(--border-default);
+}

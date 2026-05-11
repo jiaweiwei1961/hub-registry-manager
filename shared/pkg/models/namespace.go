@@ -13,12 +13,15 @@ type Namespace struct {
 	Name        string         `gorm:"size:255;not null;uniqueIndex" json:"name"`
 	DisplayName string         `gorm:"size:255" json:"display_name"`
 	Description string         `gorm:"type:text" json:"description"`
+	IsPublic    bool           `json:"is_public"`
+	OwnerID     *uuid.UUID     `gorm:"type:uuid;index" json:"owner_id"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 
 	// 关联
-	Repositories []Repository `json:"repositories,omitempty"`
+	Owner       User           `json:"owner,omitempty"`
+	Repositories []Repository  `json:"repositories,omitempty"`
 }
 
 // TableName 指定表名

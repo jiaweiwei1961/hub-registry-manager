@@ -10,8 +10,8 @@ import (
 // Manifest 表示一个镜像的 manifest
 type Manifest struct {
 	ID           uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	RepositoryID uuid.UUID      `gorm:"type:uuid;not null;index" json:"repository_id"`
-	Digest       string         `gorm:"size:71;not null;uniqueIndex" json:"digest"` // sha256:xxxxx
+	RepositoryID uuid.UUID      `gorm:"type:uuid;not null;index;uniqueIndex:idx_repo_digest" json:"repository_id"`
+	Digest       string         `gorm:"size:71;not null;uniqueIndex:idx_repo_digest" json:"digest"` // sha256:xxxxx (composite unique with repository_id)
 	MediaType    string         `gorm:"size:255" json:"media_type"`
 	ConfigDigest string         `gorm:"size:71" json:"config_digest"`
 	ConfigSize   int64          `json:"config_size"`

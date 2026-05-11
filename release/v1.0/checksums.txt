@@ -1,0 +1,15 @@
+=== Hub Registry v1.0 File Checksums ===
+
+Images:
+008e1c4783ea70f485553fc21451840597a6426c6ebf4401e5ac5398bfb5bdc6  images/gateway.tar.gz
+25b5afa79dadf85331e985fcb8152849757416f9c7785943956128f424725b60  images/registry-core.tar.gz
+6a93a7d27ade544e6298493e4f799533ee0cabf798a3b8e82fe00552963c9a82  images/replication-service.tar.gz
+a26ac307295dad13727cf5ca089a0bfb6f2125a37bbaa42427985485690bc1f7  images/web-api.tar.gz
+62f6a12c8dbe095271ab19b6c9dbf4ee0387365ba66b77687ce0fb9caec2201a  images/web-ui.tar.gz
+
+Scripts:
+41b0ba2485a8f4f567bf71ca1d0b7ed9b677cd9e0fd7e74112d12e9f5ffd9500  scripts/init.sql
+4162410acbf8370d9cd2b38304b893d5941e61321295e44b2626eb69d6459f1c  scripts/schema.sql
+
+Config:
+d4e5943b662c6e6697b5fc7455e7e4c5503ae877799cd141b7dbb7f00e66d462  config/docker-compose.yml

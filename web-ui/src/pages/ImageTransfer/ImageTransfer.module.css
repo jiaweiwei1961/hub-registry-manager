@@ -1,0 +1,89 @@
+.container {
+  padding: 24px;
+}
+
+.card {
+  height: 100%;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+}
+
+.card:hover {
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-md);
+}
+
+.uploadArea {
+  padding: 24px;
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--bg-muted);
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.uploadArea:hover {
+  border-color: var(--primary);
+  background: var(--primary-lightest);
+}
+
+.progressSection {
+  margin-top: 16px;
+}
+
+/* Ant Design overrides */
+.container :global(.ant-card) {
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+}
+
+.container :global(.ant-card:hover) {
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-md);
+}
+
+.container :global(.ant-btn-primary) {
+  background: var(--primary) !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+}
+
+.container :global(.ant-progress-bg) {
+  background: var(--primary);
+}
+
+/* Table styles */
+.container :global(.ant-table-thead > tr > th) {
+  background: var(--bg-muted) !important;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-family: var(--font-heading);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.container :global(.ant-table-tbody > tr:hover > td) {
+  background: var(--primary-lightest) !important;
+}
+
+/* Tag styles */
+.container :global(.ant-tag) {
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+.container :global(.ant-tag-green) {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}
+
+.container :global(.ant-tag-red) {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: none;
+}

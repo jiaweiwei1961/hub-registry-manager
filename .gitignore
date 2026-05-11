@@ -1,0 +1,88 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build artifacts
+dist/
+build/
+*.tar.gz
+*.tgz
+*.zip
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+test_screenshots/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Deployment scripts (temporary)
+*.exp
+check-*.sh
+check-*.exp
+deploy-*.exp
+deploy-*.sh
+restart-*.exp
+restart-*.sh
+run-*.exp
+run-*.sh
+simple-*.exp
+update-*.exp
+upload-*.exp
+verify-*.exp
+rebuild-*.exp
+
+# Release packages (keep release/ directory but ignore large archives)
+release/*.tar.gz
+release/*.zip
+
+# Playwright test outputs
+test-results/
+playwright-report/
+
+# MinIO data
+minio_data/
+
+# Database data
+postgres_data/
+
+# Binary blobs
+/data/blobs/
+/data/

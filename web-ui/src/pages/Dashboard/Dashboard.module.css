@@ -1,0 +1,157 @@
+.dashboard {
+  padding: 24px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+/* Stats Row */
+.statsRow {
+  margin-bottom: 24px;
+}
+
+.statCard {
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--light-blue);
+  box-shadow: var(--shadow-md);
+}
+
+.statCard :global(.ant-statistic-title) {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statCard :global(.ant-statistic-content) {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.statCard :global(.ant-statistic-content-prefix) {
+  color: var(--light-blue);
+}
+
+/* Main Content */
+.mainContent {
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.viewAllLink {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+}
+
+.viewAllLink:hover {
+  color: var(--bold-blue) !important;
+}
+
+.namespaceLink {
+  cursor: pointer;
+}
+
+.namespaceLink:hover {
+  opacity: 0.8;
+}
+
+/* Table Card */
+.tableCard {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+}
+
+.tableCard :global(.ant-card-head) {
+  background: transparent;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Guide Card */
+.guideCard {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+}
+
+.guideCard :global(.ant-card-head) {
+  background: transparent;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.guideSection {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.guideSection:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.guideSection :global(.ant-typography) {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.registryAddr {
+  display: inline-block;
+  padding: 10px 14px;
+  background: var(--primary-lightest);
+  border: 1px solid var(--primary-lighter);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.codeBlock {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin: 0;
+  overflow-x: auto;
+}
+
+.codeBlock code {
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 16px;
+  }
+}
