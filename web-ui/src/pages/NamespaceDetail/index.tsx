@@ -25,6 +25,7 @@ const NamespaceDetail: React.FC = () => {
   const [editingRepo, setEditingRepo] = useState<Repository | null>(null);
   const [createForm] = Form.useForm();
   const [editForm] = Form.useForm();
+  const [searchText, setSearchText] = useState('');
   const [repoPagination, setRepoPagination] = useState({
     current: 1,
     pageSize: 5,
@@ -41,7 +42,7 @@ const NamespaceDetail: React.FC = () => {
   useEffect(() => {
     if (!id) return;
     loadNamespace();
-    loadRepositories();
+    loadRepositories(1, 5, '');
   }, [id]);
 
   const loadNamespace = async () => {
@@ -57,13 +58,14 @@ const NamespaceDetail: React.FC = () => {
     }
   };
 
-  const loadRepositories = async (page = 1, pageSize = 5) => {
+  const loadRepositories = async (page = 1, pageSize = 5, search = '') => {
     setLoadingRepos(true);
     try {
       const result = await repositoryApi.listRepositories({
         namespace_id: id!,
         page,
         page_size: pageSize,
+        search: search || undefined,
       });
       setRepositories(result.data);
       setRepoPagination({
@@ -76,6 +78,11 @@ const NamespaceDetail: React.FC = () => {
     } finally {
       setLoadingRepos(false);
     }
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+    loadRepositories(1, repoPagination.pageSize, value);
   };
 
   const handleRepoClick = (repoId: string) => {
@@ -101,7 +108,7 @@ const NamespaceDetail: React.FC = () => {
       });
       message.success('仓库创建成功');
       setCreateModalVisible(false);
-      loadRepositories(repoPagination.current, repoPagination.pageSize);
+      loadRepositories(repoPagination.current, repoPagination.pageSize, searchText);
       loadNamespace();
     } catch {
       message.error('创建仓库失败');
@@ -109,7 +116,7 @@ const NamespaceDetail: React.FC = () => {
   };
 
   const handleRepoTableChange = (pag: { current?: number; pageSize?: number }) => {
-    loadRepositories(pag.current || 1, pag.pageSize || 5);
+    loadRepositories(pag.current || 1, pag.pageSize || 5, searchText);
   };
 
   const handleEditRepo = (repo: Repository) => {
@@ -133,7 +140,7 @@ const NamespaceDetail: React.FC = () => {
       });
       message.success('仓库更新成功');
       setEditModalVisible(false);
-      loadRepositories(repoPagination.current, repoPagination.pageSize);
+      loadRepositories(repoPagination.current, repoPagination.pageSize, searchText);
       loadNamespace();
     } catch {
       message.error('更新仓库失败');
@@ -147,7 +154,7 @@ const NamespaceDetail: React.FC = () => {
       // 如果当前页只有一条数据且不是第一页，跳转到前一页
       const shouldGoToPrevPage = repositories.length === 1 && repoPagination.current > 1;
       const newPage = shouldGoToPrevPage ? repoPagination.current - 1 : repoPagination.current;
-      loadRepositories(newPage, repoPagination.pageSize);
+      loadRepositories(newPage, repoPagination.pageSize, searchText);
       loadNamespace();
     } catch {
       message.error('删除仓库失败');
@@ -277,19 +284,25 @@ const NamespaceDetail: React.FC = () => {
       {/* 仓库列表 */}
       <Card title="仓库列表" extra={
         <Space>
+          <Input.Search
+            placeholder="搜索仓库"
+            allowClear
+            onSearch={handleSearch}
+            style={{ width: 200 }}
+          />
           {canManage() && (
             <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateRepo}>
               创建仓库
             </Button>
           )}
-          <Button onClick={() => loadRepositories(repoPagination.current, repoPagination.pageSize)}>刷新</Button>
+          <Button onClick={() => loadRepositories(repoPagination.current, repoPagination.pageSize, searchText)}>刷新</Button>
         </Space>
       }>
         {loadingRepos ? (
           <Spin style={{ display: 'block', textAlign: 'center', padding: 40 }} />
         ) : repositories.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 40 }}>
-            <Text type="secondary">该命名空间下暂无仓库</Text>
+            <Text type="secondary">{searchText ? '未找到匹配的仓库' : '该命名空间下暂无仓库'}</Text>
           </div>
         ) : (
           <Table
